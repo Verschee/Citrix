@@ -5,7 +5,6 @@
         Name of server/s to run session query against.
     .NOTES
         Name: Get-ServerSessions
-        Author: tl828e
         Adapted from a script taken from the link below :     
     .LINK
         https://boeprox.wordpress.org
