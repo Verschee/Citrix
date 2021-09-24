@@ -4,7 +4,7 @@ Title: Citrix Reset SmartCard Service
 Creation Date: November 21, 2019
 
 .SYNOPSIS
-Intended to reset the smart card service for the ERC Citrix team.
+Intended to reset the Citrix and Charismatics smart card service on a targeted machine.
 
 .DESCRIPTION
 PowerShell module that prompts the user for a server name, then can remotely reset the SmartCard services when the server is at a hung state. 
