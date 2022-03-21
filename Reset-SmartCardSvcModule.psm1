@@ -1,5 +1,4 @@
 <#
-Author: Sam Verschuyl
 Title: Citrix Reset SmartCard Service
 Creation Date: November 21, 2019
 
