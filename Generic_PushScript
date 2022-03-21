@@ -1,9 +1,7 @@
 <#
 
-.AUTHOR
-Sam Verschuyl
 .TITLE
-
+Generic Server Push Script
 .SCRIPT VERSION
 1.01
 
