@@ -1,0 +1,59 @@
+<#
+
+.AUTHOR
+Sam Verschuyl
+.TITLE
+
+.SCRIPT VERSION
+1.01
+
+.SYNOPSIS
+Script to import a list of remote servers from a collection text file then push commands toward.
+
+.DESCRIPTION
+The imported list must reside within the script directory and working location.
+Select the collection of servers to be targeted via the GUI window. The -OutputMode switch will allow for multiple or single file input preferences.
+
+#>
+
+$fdt = Get-Date -format hhmmss
+$log = "C:\Temp\RobocopyLog_" + "$fdt.txt"
+Start-Transcript
+# define variables
+$ServerPath = $PSScriptRoot
+$Import = Get-ChildItem $ServerPath | Where-Object {$_.Extension -eq ".txt"}
+$collection = Get-Item $Import | Out-GridView -Title "[PUSH SCRIPT] Select the server collection you would like to run this operation on" -OutputMode Single
+
+Function Push-Commands {
+    Param(
+    [Parameter(Mandatory=$true)]
+    [string]$source,
+    [string]$dest,
+    [string]$collection
+    )
+    $servers = Get-Content $collection
+
+    # Run our Robocopy commands here (copies inherited security permissions with :dats switch)
+    ForEach ($server in $servers) {
+        If(Test-Connection -cn $server -Count 2 -Quiet){
+            Try {
+                $newdest = "$server\$dest"
+                Write-Host " Path: $source `n Destination: $newdest" -ForegroundColor Cyan
+                # Remove Existing Directory
+                # Remote-item "\\$newdest" -recurse -ErrorAction SilentlyContinue
+                Robocopy $source "\\$newdest" /copy:dats /e /z /np /mt:16
+                If ((Test-Path "\\$newdest") -eq $false) {
+                    Write-Host "$newdest - Directory not found" -ForegroundColor Red
+                }
+            } Catch {
+                Write-Error "This failed : [REASON] $($_.Exception.Message)"
+            }
+        } Else {
+            Write-Error "Computer ($server) is offline"
+        }
+    }
+}
+Push-Commands -Source "C:\Users\defaultuser\My Documents\" -dest "C$\Users\defaultuser\My Documents\" -collection $collection
+
+
+Stop-Transcript
