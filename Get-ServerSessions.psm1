@@ -29,6 +29,7 @@ Function Get-ServerSessions {
                 [string[]]$server
                 )
     Begin {
+        Write-Host "Retrieve Remote Server Sessions" -foregroundcolor DarkCyan
         $report = @()
         }
     Process { 
