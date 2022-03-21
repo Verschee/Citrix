@@ -16,7 +16,7 @@ Can be copied to a tech's local PowerShell folder to be run on client machines i
 # $citrixServer = Get-Content "c:\temp\serverlist.txt"
 # $PSCred = Get-Credential
 
-Write-Host "*********************************`n `n `tERC-Citrix PowerShell Module `n`n`tReset SmartCard Services`n`nNOTE: Press CTRL-C to cancel script at any time`n`n*********************************`n`n"
+Write-Host "*********************************`n `n `tCitrix PowerShell Module `n`n`tReset SmartCard Services`n`nNOTE: Press CTRL-C to cancel script at any time`n`n*********************************`n`n"
 
 $CitrixServer = Read-Host "[USER INPUT]`tName of server to reset the SmartCard service on"
 $FindSvcs = get-service -Name CtxSmartCardSvc
