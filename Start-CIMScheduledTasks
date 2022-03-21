@@ -1,0 +1,28 @@
+<#
+Enables targeted scheduled tasks on a group of servers from a collection existing in the script location
+#>
+
+$ServerPath = $PSScriptRoot
+$import = Get-ChildItem $ServerPath | Where-Object {$_.Extension -eq ".txt"}
+$collection = Get-Item $import | Out-GridView -Title "[LIST OF SERVERS] Select the collection of servers to run this operation" -OutputMode Single
+$remoteMachines = Get-Content $collection
+# Scheduled Task name from Windows Task Scheduler
+$task = "StartComponentCleanup"
+
+ForEach ($Machine in $remoteMachines){
+    # Make sure the machine is available before running
+    $Test = Test-Connection $Machine -Count 2
+    If ($Test) {
+    Write-Host "$Machine is available. Continuing..." -ForegroundColor Cyan
+    # Create a remote session on a target machine
+    $Sesh = New-CimSession -ComputerName $Machine
+    # Identify the scheduled task from a grid selection: $task = Get-ScheduledTask -CimSession $sesh | Out-Gridview -OutputMode Single
+    Try {
+        $RemoteTask = Get-ScheduledTask -CimSession $sesh -TaskName $task
+        $RemoteTask | Start-ScheduledTask -AsJob
+        Write-Host "Task on $($Sesh.ComputerName) status: *$($Task)* is currently *$($RemoteTask.State)* " -ForegroundColor Green
+    } Catch {
+        Write-Host "`t Task could not be started: [REASON]: $($Exception.Message)" -foregroundColor Red
+        }
+    }
+}
